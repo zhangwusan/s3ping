@@ -39,7 +39,7 @@ def main():
         url="https://news.sabay.com.kh/",
         parser=NewsParser(logger=logger),
         logger=logger,
-        exporter=JsonExporter(filepath='output/news.json'),
+        exporter=JsonExporter(filepath='output/newsl.json'),
         debug=True
     )
 
@@ -48,7 +48,6 @@ def main():
         logger.info("Scraping succeeded.")
         for item in result:
             print(item)
-            
     else:
         logger.error("Failed to fetch.")
 
