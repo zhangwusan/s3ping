@@ -48,6 +48,7 @@ def main():
         logger.info("Scraping succeeded.")
         for item in result:
             print(item)
+            
     else:
         logger.error("Failed to fetch.")
 
