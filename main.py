@@ -1,3 +1,7 @@
+from ast import parse
+import os
+
+from dotenv import load_dotenv
 from s3ping.core.parser.base import BaseParser
 from s3ping.core.parser.html import HtmlParser
 from typing import Any, Optional
@@ -5,6 +9,13 @@ from typing import Any, Optional
 from s3ping.core.utils.logger import Logger
 from s3ping.core.pipeline.scrape import ScraperPipeline
 from s3ping.core.exporter.default import JsonExporter
+
+from s3ping.middlewares.selenium import SeleniumMiddleware
+from s3ping.middlewares.captcha import CaptchaMiddleware
+from s3ping.solvers.capsolver import CapSolver
+
+load_dotenv()
+api_key = os.getenv("CAPSOLVER_API_KEY")
 
 
 class NewsParser(BaseParser):
@@ -16,39 +27,29 @@ class NewsParser(BaseParser):
         if self.logger:
             self.logger.info("Parsing content...")
 
-        parser = HtmlParser(content)
-        nav_links = parser.find_all_elements("ul.nav.navbar-nav li a")
+        parser = HtmlParser(content, parser='html.parser')
+        # for element in parser.soup.find_all(True):  # True = match all tags
+        #     print(f"<{element.name}> attributes: {element.attrs}")
 
-        results = []
-        for link in nav_links:
-            text = parser.extract_text(link)
-            href = parser.extract_attribute(link, "href")
-            if self.logger:
-                self.logger.debug(f"Found link: {text} -> {href}")
-            results.append({"label": text, "href": href})
-
-        if self.logger:
-            self.logger.info(f"Extracted {len(results)} nav links.")
-
-        return results
+        return parser
 
 
 def main():
     logger = Logger(log_paths=["logs/main.log"])
     pipeline = ScraperPipeline(
-        url="https://news.sabay.com.kh/",
+        url="https://www.google.com/recaptcha/api2/demo",
+        middlewares=[
+            CaptchaMiddleware(auto_solve=True ,solver=CapSolver(api_key=api_key, logger=logger)),
+            SeleniumMiddleware(driver_path='driver/chromedriver-mac-arm64/chromedriver', headless=True),
+        ],
         parser=NewsParser(logger=logger),
         logger=logger,
-        exporter=JsonExporter(filepath='output/news.json'),
         debug=True
     )
 
     result = pipeline.run()
     if result:
-        logger.info("Scraping succeeded.")
-        for item in result:
-            print(item)
-            
+        logger.info("Scraping succeeded.")            
     else:
         logger.error("Failed to fetch.")
 

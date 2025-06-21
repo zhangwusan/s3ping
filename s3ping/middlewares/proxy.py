@@ -1,7 +1,7 @@
 from itertools import cycle
 from typing import Optional, List, Dict, Tuple, Any
 from requests.models import Response
-from s3ping.s3ping.core.utils.logger import Logger
+from s3ping.core.utils.logger import Logger
 from s3ping.middlewares.base import BaseMiddleware
 
 

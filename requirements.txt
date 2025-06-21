@@ -7,3 +7,7 @@ undetected-chromedriver==3.5.5
 build==1.2.2.post1
 colorlog==6.9.0
 twine==6.1.0
+langchain==0.3.26
+python-dotenv==1.1.0
+langchain-ollama==0.3.3
+html5lib==1.1

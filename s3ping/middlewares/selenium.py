@@ -6,7 +6,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 
 from s3ping.middlewares.base import BaseMiddleware
-from s3ping.s3ping.core.utils.logger import Logger
+from s3ping.core.utils.logger import Logger
 
 class SeleniumMiddleware(BaseMiddleware):
     def __init__(self, driver_path: Optional[str] = None, headless: bool = True, logger: Logger = None):
