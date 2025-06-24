@@ -1,6 +1,6 @@
 from typing import Optional
 from src.s3ping.types.base import NextHandlerType, RequestType, ResponseType
-from src.s3ping.logger.logger import Logger
+from src.s3ping.loggers.logger import Logger
 
 
 class BaseMiddleware:

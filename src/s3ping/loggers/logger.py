@@ -1,6 +1,5 @@
 import logging
 import os
-from datetime import datetime
 import colorlog
 from typing import Optional, List
 

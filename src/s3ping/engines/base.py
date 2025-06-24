@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from src.s3ping.types.base import RequestType
-from src.s3ping.response.html import HTMLResponse
+from src.s3ping.responses.html import HTMLResponse
 
 
 class BaseEngine(ABC):

@@ -1,6 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from src.s3ping.response.html import HTMLResponse
+from src.s3ping.responses.html import HTMLResponse
 from src.s3ping.types.base import RequestType, ResponseType
 from src.s3ping.engines.base import BaseEngine
 
