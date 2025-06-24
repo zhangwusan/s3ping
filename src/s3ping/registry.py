@@ -21,7 +21,7 @@ PARSER_REGISTRY: Dict[str, Type[BaseParser]] = {
 }
 
 EXPORTER_REGISTRY: Dict[str, Any] = {
-    "JsonExporter": lambda path=None, **kwargs: JsonExporter(output_path=path),
+    "JsonExporter": lambda output_path=None, **kwargs: JsonExporter(output_path=output_path),
 }
 
 MIDDLEWARE_REGISTRY: Dict[str, Type[BaseMiddleware]] = {
