@@ -1,6 +1,7 @@
 scraper: DefaultScraper
 urls:
   - "https://news.sabay.com.kh"
+  - "https://www.khmertimeskh.com/"
 engine: requests
 middlewares:
   - name: HeaderMiddleware

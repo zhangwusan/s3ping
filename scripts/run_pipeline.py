@@ -4,7 +4,7 @@ import sys
 # Add src/ to path for module resolution
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from src.s3ping.registry import build_pipeline
+from src.s3ping.core.pipelines.builder import build_pipeline
 from src.s3ping.utils.load import load_config
 
 
