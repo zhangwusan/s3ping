@@ -21,34 +21,35 @@ class BasePipeline:
         config: Optional[Dict[str, Any]] = None,
         parser: Optional[BaseParser] = None,
         exporter: Optional[BaseExporter] = None,
-    ):
-        self.logger = logger or Logger(class_name=self.__class__.__name__)
-        self.config = config or {}
-        self.parser = parser
-        self.exporter = exporter
+    ) -> None:
+        self.logger: Logger = logger or Logger(class_name=self.__class__.__name__)
+        self.config: Dict[str, Any] = config or {}
+        self.parser: Optional[BaseParser] = parser
+        self.exporter: Optional[BaseExporter] = exporter
 
-        # Engine setup
-        if engine:
-            self.engine = engine
+        # Engine initialization: use provided engine instance or create via EngineManager by type
+        if engine is not None:
+            self.engine: BaseEngine = engine
         else:
-            etype = engine_type or EngineType.REQUESTS
+            etype: EngineType = engine_type or EngineType.REQUESTS
             self.engine_manager = EngineManager(engine_type=etype, logger=self.logger)
             self.engine = self.engine_manager.engine
 
-        # Middleware stack
-        self.middleware = MiddlewareManager(middlewares or [])
+        # Middleware stack manager
+        self.middleware: MiddlewareManager = MiddlewareManager(middlewares or [])
 
-        # Scraper class (delayed instantiation)
-        self.scraper_class = scraper_class
+        # Scraper class reference (not instantiated yet)
+        self.scraper_class: Type[BaseScraper] = scraper_class
 
     def run(self) -> None:
+        # Instantiate scraper with all dependencies
         scraper = self.scraper_class(
             engine=self.engine,
             middleware=self.middleware,
             logger=self.logger,
             config=self.config,
             parser=self.parser,
-            exporter=self.exporter
+            exporter=self.exporter,
         )
         self.logger.info(f"Running scraper: {self.scraper_class.__name__}", caller=self)
         scraper.run()

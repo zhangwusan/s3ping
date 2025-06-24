@@ -1,0 +1,10 @@
+urls:
+  - "https://news.sabay.com.kh"
+engine: requests
+middlewares:
+  - HeaderMiddleware
+  - RetryMiddleware
+parser: DefaultParser
+exporter:
+  name: JsonExporter
+  path: "./output/test_output.json"
