@@ -9,12 +9,13 @@ USER_AGENTS = [
 ]
 
 class HeaderMiddleware(BaseMiddleware):
-    def __init__(self, logger = None):
+    def __init__(self, user_agent: str = None, logger=None):
         super().__init__(logger=logger)
+        self.user_agent = user_agent
 
     def process(self, request: RequestType, next: NextHandlerType) -> ResponseType:
-        user_agent = random.choice(USER_AGENTS)
-        request.setdefault("headers", {})["User-Agent"] = user_agent
+        ua = self.user_agent or random.choice(USER_AGENTS)
+        request.setdefault("headers", {})["User-Agent"] = ua
         if self.logger:
-            self.logger.debug(f"HeaderMiddleware set User-Agent: {user_agent}", caller=self)
+            self.logger.debug(f"HeaderMiddleware set User-Agent: {ua}", caller=self)
         return next(request)

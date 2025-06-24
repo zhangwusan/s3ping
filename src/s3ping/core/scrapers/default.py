@@ -1,12 +1,18 @@
-from typing import List, Optional
+from typing import Optional, Type, List
+from src.s3ping.core.scrapers.base import BaseScraper
 from src.s3ping.core.parsers.base import BaseParser
 from src.s3ping.core.exporters.base import BaseExporter
-from src.s3ping.core.scrapers.base import BaseScraper
 from src.s3ping.types.base import RequestType
 from src.s3ping.responses.html import HTMLResponse
 
 class DefaultScraper(BaseScraper):
-    def __init__(self, *args, parser: Optional[BaseParser] = None, exporter: Optional[BaseExporter] = None, **kwargs):
+    def __init__(
+        self,
+        *args,
+        parser: Optional[Type[BaseParser]] = None,  # parser class
+        exporter: Optional[BaseExporter] = None,
+        **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self.parser_class = parser
         self.exporter = exporter
@@ -24,7 +30,7 @@ class DefaultScraper(BaseScraper):
                 continue
 
             if self.parser_class:
-                parser = self.parser_class(response)
+                parser = self.parser_class(response)  # instantiate parser here with response
                 parsed = parser.parse()
                 results.append(parsed)
 
