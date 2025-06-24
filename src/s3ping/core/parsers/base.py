@@ -1,6 +1,13 @@
-from typing import Any
+from abc import ABC, abstractmethod
+from bs4 import BeautifulSoup
+from src.s3ping.responses.html import HTMLResponse
 
+class BaseParser(ABC):
+    def __init__(self, response: HTMLResponse):
+        self.response = response
+        self.soup = BeautifulSoup(response.content, "html.parser")
 
-class BaseParser:
-    def parse(self, content: str, parser: str = "lxml") -> Any:
-        raise NotImplementedError
+    @abstractmethod
+    def parse(self):
+        """Should return a list of extracted data dictionaries"""
+        pass
