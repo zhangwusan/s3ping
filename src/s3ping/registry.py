@@ -4,7 +4,6 @@ from src.s3ping.middlewares.header import HeaderMiddleware
 from src.s3ping.middlewares.retry import RetryMiddleware
 from src.s3ping.constants.engine import EngineType
 
-# Optional instantiation function or just class
 MIDDLEWARE_REGISTRY = {
     "HeaderMiddleware": HeaderMiddleware,
     "RetryMiddleware": RetryMiddleware,

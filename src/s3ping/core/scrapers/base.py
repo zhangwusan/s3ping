@@ -16,16 +16,23 @@ class BaseScraper(ABC):
     ):
         self.engine: BaseEngine = engine
         self.middleware: MiddlewareManager = middleware
-        self.logger: Optional[Logger] = logger
+        self.logger: Logger = logger or Logger(class_name=self.__class__.__name__)
         self.config: Dict[str, Any] = config or {}
 
-    def request(self, req: RequestType) -> ResponseType:
+    def request(self, req: RequestType) -> Optional[ResponseType]:
         """Request → Middleware → Engine → Response."""
-        if self.logger:
-            self.logger.info(f"[Request] → {req['url']}", caller=self)
-        response = self.middleware.execute(req, self.engine.send)
-        if self.logger:
-            self.logger.info(f"[Response] ← Status {getattr(response, 'status_code', 'N/A')}", caller=self)
+        self.logger.info(f"[Request] → {req['url']}", caller=self)
+        try:
+            response = self.middleware.execute(req, self.engine.send)
+        except Exception as e:
+            self.logger.error(f"Request failed: {e}", caller=self)
+            return None
+
+        if response is None:
+            self.logger.error(f"No response received for {req['url']}", caller=self)
+            return None
+
+        self.logger.info(f"[Response] ← Status {getattr(response, 'status_code', 'N/A')}", caller=self)
         return response
 
     @abstractmethod

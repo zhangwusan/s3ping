@@ -10,7 +10,7 @@ class Logger:
         log_paths: Optional[List[str]] = None,
         log_level_file: int = logging.DEBUG,
         log_level_console: int = logging.DEBUG,
-        log_format = "%(asctime)s - [%(levelname)-7s] - %(message)s",
+        log_format = "%(asctime)s - [%(levelname)-5s] - %(message)s",
         date_format: str = "%Y-%m-%d %H:%M:%S",
         class_name: Optional[str] = None,
         enable_logging: bool = True,

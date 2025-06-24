@@ -3,7 +3,7 @@ import sys
 from typing import Dict, Any
 
 # Add src/ to path for module resolution
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src.s3ping.utils.load import load_config
 from src.s3ping.core.scrapers.default import DefaultScraper
@@ -41,13 +41,15 @@ def build_pipeline(config: Dict[str, Any]) -> BasePipeline:
         raise ValueError(f"Exporter '{exporter_name}' not found in registry.")
     exporter = exporter_factory(exporter_path)
 
-    # Load engine
+    # Load engine type
     engine_key = config.get("engine", "requests")
     engine_type = ENGINE_MAP.get(engine_key)
     if not engine_type:
         raise ValueError(f"Engine '{engine_key}' not found in ENGINE_MAP.")
+    
+    # Scrapper 
 
-    # Return pipeline
+    # Build pipeline
     return BasePipeline(
         scraper_class=DefaultScraper,
         middlewares=middlewares,
@@ -59,6 +61,6 @@ def build_pipeline(config: Dict[str, Any]) -> BasePipeline:
 
 
 if __name__ == "__main__":
-    config = load_config("config/scrapes/default.yaml")  # must return a dict
+    config = load_config("./src/s3ping/config/scrapes/default.yaml")  # must return a dict
     pipeline = build_pipeline(config)
     pipeline.run()

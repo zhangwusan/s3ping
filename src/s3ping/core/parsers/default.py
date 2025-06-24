@@ -2,6 +2,9 @@ from src.s3ping.core.parsers.base import BaseParser
 import json
 
 class DefaultParser(BaseParser):
+    def __init__(self, response):
+        super().__init__(response)
+        
     def parse(self) -> dict:
         """Extract common useful page information."""
         return {
