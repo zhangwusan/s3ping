@@ -33,6 +33,8 @@ class DefaultScraper(BaseScraper):
                 parser = self.parser_class(response)  # instantiate parser here with response
                 parsed = parser.parse()
                 results.append(parsed)
+            else:
+                results.append(response.content)
 
         if self.exporter:
             self.exporter.export(results)

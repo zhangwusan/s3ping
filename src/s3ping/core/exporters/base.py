@@ -3,11 +3,15 @@ from datetime import datetime
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
+from src.s3ping.loggers.logger import Logger
+
 class BaseExporter(ABC):
     DEFAULT_OUTPUT_DIR = "./output"
     EXPECTED_EXTENSION = ".txt"
 
-    def __init__(self, output_path: Optional[str] = None):
+    def __init__(self, output_path: Optional[str] = None, logger: Optional[Logger] = None):
+        self.logger = logger or Logger(class_name=self.__class__.__name__)
+
         if output_path is None:
             output_path = self._generate_default_filename()
         self.output_path = output_path

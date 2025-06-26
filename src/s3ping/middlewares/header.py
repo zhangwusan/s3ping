@@ -1,4 +1,5 @@
 import random
+from typing import Dict, Any
 from src.s3ping.types.base import NextHandlerType, RequestType, ResponseType
 from src.s3ping.middlewares.base import BaseMiddleware
 
@@ -9,13 +10,23 @@ USER_AGENTS = [
 ]
 
 class HeaderMiddleware(BaseMiddleware):
-    def __init__(self, user_agent: str = None, logger=None):
+    def __init__(self, headers: Dict[str, str] = None, logger=None):
         super().__init__(logger=logger)
-        self.user_agent = user_agent
+        self.headers = headers or {}
 
     def process(self, request: RequestType, next: NextHandlerType) -> ResponseType:
-        ua = self.user_agent or random.choice(USER_AGENTS)
-        request.setdefault("headers", {})["User-Agent"] = ua
-        if self.logger:
-            self.logger.debug(f"HeaderMiddleware set User-Agent: {ua}", caller=self)
+        # Ensure headers dict exists
+        headers: Dict[str, Any] = request.setdefault("headers", {})
+
+        # Randomize or override User-Agent
+        if "User-Agent" not in headers:
+            ua = random.choice(USER_AGENTS)
+            headers["User-Agent"] = ua
+            if self.logger:
+                self.logger.debug(f"[HeaderMiddleware] Set User-Agent: {ua}", caller=self)
+
+        # Inject default headers (e.g. Accept-Language, Referer, etc.)
+        for key, value in self.headers.items():
+            headers.setdefault(key, value)  # Don't override explicitly passed headers
+
         return next(request)

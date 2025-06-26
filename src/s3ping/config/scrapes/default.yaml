@@ -1,19 +1,21 @@
 scraper: DefaultScraper
 urls:
   - "https://news.sabay.com.kh"
-  - "https://www.khmertimeskh.com/"
+  - "https://www.khmertimeskh.com/category/khmer/"
 engine: requests
 middlewares:
   - name: HeaderMiddleware
     params:
-      user_agent: "Mozilla/5.0 (Custom Agent)"
+      headers:
+        User-Agent: "Mozilla/5.0 (Custom Agent)"
+        Accept-Language: "kh-KH,fr;q=0.9"
   - name: RetryMiddleware
     params:
       retries: 5
       delay: 2
-parser:
-  name: DefaultParser
+# parser:
+#   name: FullDOMParser
 exporter:
-  name: JsonExporter
+  name: HtmlExporter
   params:
-    output_path: "./output/data.json"
+    output_path: "./output/full-data.html"

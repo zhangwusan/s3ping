@@ -8,7 +8,6 @@ from src.s3ping.registry import (
     SCRAPER_REGISTRY,
 )
 
-
 def build_pipeline(config: Dict[str, Any]) -> BasePipeline:
     # Get scraper
     scraper_name = config.get("scraper", "DefaultScraper")
@@ -26,12 +25,15 @@ def build_pipeline(config: Dict[str, Any]) -> BasePipeline:
             raise ValueError(f"Middleware '{name}' not found in MIDDLEWARE_REGISTRY")
         middlewares.append(middleware_cls(**params))
 
-    # Get parser class (not instantiated)
-    parser_cfg = config.get("parser", {})
-    parser_name = parser_cfg.get("name") if isinstance(parser_cfg, dict) else parser_cfg
-    parser_class = PARSER_REGISTRY.get(parser_name)
-    if not parser_class:
-        raise ValueError(f"Parser '{parser_name}' not found in PARSER_REGISTRY")
+    # Get parser class (optional)
+    parser = None
+    parser_cfg = config.get("parser")
+    if parser_cfg:
+        parser_name = parser_cfg.get("name") if isinstance(parser_cfg, dict) else parser_cfg
+        parser_class = PARSER_REGISTRY.get(parser_name)
+        if not parser_class:
+            raise ValueError(f"Parser '{parser_name}' not found in PARSER_REGISTRY")
+        parser = parser_class
 
     # Get exporter (instantiated)
     exporter = None
@@ -55,7 +57,7 @@ def build_pipeline(config: Dict[str, Any]) -> BasePipeline:
         scraper_class=scraper_class,
         middlewares=middlewares,
         engine_type=engine_type,
-        parser=parser_class,
+        parser=parser,
         exporter=exporter,
         config=config,
     )
